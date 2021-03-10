@@ -15,7 +15,7 @@ let hostIP;
 
 require('console-stamp')(console, { pattern: 'dd/mm/yyyy HH:MM:ss.l' });
 
-let masterHeartbeatInterval;
+// let masterHeartbeatInterval;
 const clients = {};
 
 const handshakes = {};
@@ -80,8 +80,8 @@ Make sure your configuration is correct and your ports are open.}
 
     console.log(chalk`Listening on "{cyan ${config.WSServerIP}:${config.WSServerPort}}" (copy and paste this address as "wsServer" in tokovoip_script/c_config.lua)`);
 
-    masterHeartbeat();
-    masterHeartbeatInterval = setInterval(masterHeartbeat, 300000);
+    // masterHeartbeat();
+    // masterHeartbeatInterval = setInterval(masterHeartbeat, 300000);
   });
 })()
 
@@ -175,19 +175,19 @@ async function registerHandshake(socket) {
       return;
     }
     client = Object.values(clients).find(item => !item.fivem.socket && item.ip === socket.clientIp);
-    try {
-      await axios.post('https://master.tokovoip.itokoyamato.net/register', {
-        ip: socket.clientIp,
-        server: {
-          tsServer: config.TSServer,
-          ip: config.WSServerIP,
-          port: config.WSServerPort,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      throw e;
-    }
+    // try {
+    //   await axios.post('https://master.tokovoip.itokoyamato.net/register', {
+    //     ip: socket.clientIp,
+    //     server: {
+    //       tsServer: config.TSServer,
+    //       ip: config.WSServerIP,
+    //       port: config.WSServerPort,
+    //     },
+    //   });
+    // } catch (e) {
+    //   console.error(e);
+    //   throw e;
+    // }
   }
   socket.uuid = client.uuid;
   client.fivem.socket = socket;

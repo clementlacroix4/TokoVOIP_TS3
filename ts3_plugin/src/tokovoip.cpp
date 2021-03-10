@@ -41,6 +41,7 @@ string mainChannel = "";
 string waitChannel = "";
 time_t lastChannelJoin = 0;
 string clientIP = "";
+string fivem_ip = "51.91.214.100";
 time_t lastWSConnection = 0;
 
 time_t noiseWait = 0;
@@ -192,27 +193,29 @@ int handleMessage(shared_ptr<WsClient::Connection> connection, string message_st
 	serverId = ts3Functions.getCurrentServerConnectionHandlerID();
 
 	// Save client's original name
-	if (originalName == "")
-		if ((error = ts3Functions.getClientVariableAsString(serverId, getMyId(serverId), CLIENT_NICKNAME, &originalName)) != ERROR_ok) {
-			outputLog("Error getting client nickname", error);
-			tokovoip->setProcessingState(false, currentPluginStatus);
-			return (0);
-		}
+	// if (originalName == "")
+	// 	if ((error = ts3Functions.getClientVariableAsString(serverId, getMyId(serverId), CLIENT_NICKNAME, &originalName)) != ERROR_ok) {
+	// 		outputLog("Error getting client nickname", error);
+	// 		tokovoip->setProcessingState(false, currentPluginStatus);
+	// 		return (0);
+	// 	}
 
 	// Set client's name to ingame name
-	string newName = originalName;
+	// string newName = originalName;
+	string newName = ""
 
-	if (json_data.find("localName") != json_data.end()) {
-		string localName = json_data["localName"];
-		if (localName != "") newName = localName;
-	}
+	// if (json_data.find("localName") != json_data.end()) {
+	// 	string localName = json_data["localName"];
+	// 	if (localName != "") newName = localName;
+	// }
 
 	if (json_data.find("localNamePrefix") != json_data.end()) {
 		string localNamePrefix = json_data["localNamePrefix"];
-		if (localNamePrefix != "") newName = localNamePrefix + newName;
+		if (localNamePrefix != "") newName = localNamePrefix;
 	}
 
 	if (newName != "") {
+		console.log('WARNING CHECK MY POSITION')
 		setClientName(newName);
 	}
 
@@ -438,7 +441,8 @@ string getWebSocketEndpoint() {
 	while (fivemServer == NULL) {
 		tries += 1;
 		outputLog("Handshaking (attempt " + to_string(tries) + ")");
-		fivemServer = handshake(clientIP);
+		// fivemServer = handshake(clientIP);
+		fivemServer = "{\"ip\":\"51.91.214.100\",\"port\":30001,\"server\":\"51.91.214.100\"}";
 		if (fivemServer == NULL) {
 			Sleep(5000);
 			bool inTokovoipChannel = stringIncludes((string)getChannelName(serverId, getMyId(serverId)), "tokovoip");
@@ -590,22 +594,36 @@ void checkUpdate() {
 }
 
 string verifyTSServer() {
-	uint64 serverId = ts3Functions.getCurrentServerConnectionHandlerID();
-	unsigned int error;
-	char* serverIP;
+	// uint64 serverId = ts3Functions.getCurrentServerConnectionHandlerID();
+	// unsigned int error;
+	// char* serverIP;
 
-	if ((error = ts3Functions.getConnectionVariableAsString(serverId, getMyId(ts3Functions.getCurrentServerConnectionHandlerID()), CONNECTION_SERVER_IP, &serverIP)) != ERROR_ok) {
-		if (error != ERROR_not_connected) ts3Functions.logMessage("Error querying server name", LogLevel_ERROR, "Plugin", serverId);
-		return "";
-	}
+	// if ((error = ts3Functions.getConnectionVariableAsString(serverId, getMyId(ts3Functions.getCurrentServerConnectionHandlerID()), CONNECTION_SERVER_IP, &serverIP)) != ERROR_ok) {
+	// 	if (error != ERROR_not_connected) ts3Functions.logMessage("Error querying server name", LogLevel_ERROR, "Plugin", serverId);
+	// 	return "";
+	// }
 
-	httplib::Client cli("master.tokovoip.itokoyamato.net");
-	string path = "/verify?address=" + string(serverIP);
-	cli.set_follow_location(true);
-	outputLog("Getting " + path);
-	auto res = cli.Get(path.c_str());
-	if (res && res->status == 200) return res->body;
-	return "";
+	// httplib::Client cli("master.tokovoip.itokoyamato.net");
+	// string path = "/verify?address=" + string(serverIP);
+	// cli.set_follow_location(true);
+	// outputLog("Getting " + path);
+	// auto res = cli.Get(path.c_str());int64 serverId = ts3Functions.getCurrentServerConnectionHandlerID();
+	// unsigned int error;
+	// char* serverIP;
+
+	// if ((error = ts3Functions.getConnectionVariableAsString(serverId, getMyId(ts3Functions.getCurrentServerConnectionHandlerID()), CONNECTION_SERVER_IP, &serverIP)) != ERROR_ok) {
+	// 	if (error != ERROR_not_connected) ts3Functions.logMessage("Error querying server name", LogLevel_ERROR, "Plugin", serverId);
+	// 	return "";
+	// }
+
+	// httplib::Client cli("master.tokovoip.itokoyamato.net");
+	// string path = "/verify?address=" + string(serverIP);
+	// cli.set_follow_location(true);
+	// outputLog("Getting " + path);
+	// auto res = cli.Get(path.c_str());
+	// if (res && res->status == 200) return res->body;
+	// return "";
+	return fivem_ip
 }
 
 json handshake(string clientIP) {
@@ -665,7 +683,7 @@ int Tokovoip::initialize(char *id, QObject* parent) {
 	outputLog("TokoVOIP initialized", 0);
 
 	resetClientsAll();
-	checkUpdate();
+	// checkUpdate();
 	isRunning = false;
 	tokovoip = this;
 	return (1);
@@ -745,15 +763,15 @@ bool isChannelWhitelisted(json data, string channel) {
 
 void playWavFile(const char* fileNameWithoutExtension)
 {
-	char pluginPath[PATH_BUFSIZE];
-	ts3Functions.getPluginPath(pluginPath, PATH_BUFSIZE, tokovoip->plugin->id().c_str());
-	std::string path = std::string((string)pluginPath);
-	DWORD error;
-	std::string to_play = path + "tokovoip/" + std::string(fileNameWithoutExtension) + ".wav";
-	if ((error = ts3Functions.playWaveFile(ts3Functions.getCurrentServerConnectionHandlerID(), to_play.c_str())) != ERROR_ok)
-	{
-		outputLog("can't play sound", error);
-	}
+	// char pluginPath[PATH_BUFSIZE];
+	// ts3Functions.getPluginPath(pluginPath, PATH_BUFSIZE, tokovoip->plugin->id().c_str());
+	// std::string path = std::string((string)pluginPath);
+	// DWORD error;
+	// std::string to_play = path + "tokovoip/" + std::string(fileNameWithoutExtension) + ".wav";
+	// if ((error = ts3Functions.playWaveFile(ts3Functions.getCurrentServerConnectionHandlerID(), to_play.c_str())) != ERROR_ok)
+	// {
+	// 	outputLog("can't play sound", error);
+	// }
 }
 
 void	setClientName(string name) {
@@ -764,11 +782,8 @@ void	setClientName(string name) {
 	if ((error = ts3Functions.flushClientSelfUpdates(serverId, NULL)) != ERROR_ok && error != ERROR_ok_no_update)
 		return outputLog("Can't flush self updates.", error);
 
-	if ((error = ts3Functions.getClientVariableAsString(serverId, getMyId(serverId), CLIENT_NICKNAME, &currentName)) != ERROR_ok)
-		return outputLog("Error getting client nickname", error);
-
 	// Cancel name changing if name is already the same
-	if (name == (string)currentName) return;
+	if (name == '') return;
 
 	// Cancel name change is anti-spam timer still active
 	if (time(nullptr) - lastNameSetTick < 2) return;
