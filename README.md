@@ -1,3 +1,6 @@
+# LSC TokoVOIP Version
+
+Modified version of TokoVOIP for LSC FiveM Server. It's cut off the master by specify server address in plugin code. Another features incoming
 
 # Introduction: TokoVOIP
 TokoVOIP is a TeamSpeak plugin used along a FiveM script to add a custom proximity chat and radio system to [FiveM](https://fivem.net/)  
